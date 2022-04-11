@@ -1,0 +1,17 @@
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/dao/PollRepository.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/Controller/IndexServlet.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/Model/Poll.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/Model/User.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/service/PollService.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/Controller/UserServlet.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/Controller/PollServlet.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/Model/Lecture.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/Model/Course.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/dao/UserRepository.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/Model/Comment.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/Controller/MaterialController.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/dao/UserRoleRepository.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/Model/Vote.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/service/UserService.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/Model/UserRole.java
+/Users/emilylau/NetBeansProjects/380gp/src/main/java/hkmu/comps380f/gp/Controller/AuthenticationController.java
