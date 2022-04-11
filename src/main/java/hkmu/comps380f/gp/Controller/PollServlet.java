@@ -14,10 +14,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +42,13 @@ public class PollServlet extends HttpServlet {
     PollRepository PollRepo;
     
     public class Form{
-
         private String question;
         private String option1;
         private String option2;
         private String option3;
         private String option4;
 
+      
         public String getQuestion() {
             return question;
         }
@@ -114,61 +111,44 @@ public class PollServlet extends HttpServlet {
         pollPage.addObject("option3", option3);
         pollPage.addObject("option4", option4);
 
+        Vote vote = VoteRepo.findById(pollId).orElse(null);
+
         List<Comment> commentsSet = poll.getComments();
         
         
         System.out.println("username: "+principal.getName());
-        /*ResultSet voteSet = getVote(pollId, username);
         
-        if(voteSet.next()){
-            voteOption = Integer.parseInt(voteSet.getString("voteOption"));
-
-        }
-            */
-        //pollPage.addObject("voteOption", voteOption);    
+        pollPage.addObject("voteOption", voteOption);    
         pollPage.addObject("comments", commentsSet);
         //pollPage.addObject("vote", new Vote());
         return pollPage;
     }
-/*
+
     @GetMapping("/create")
     public ModelAndView pollCreateForm(){
-        // ModelAndView pollForm = new ModelAndView("pollForm","poll",new Poll());
-        // pollForm.addObject("action", "createForm");
-        // return pollForm;
-        return new ModelAndView("pollForm","poll",new Poll());
+        ModelAndView pollForm = new ModelAndView("pollForm","poll",new Form());
+        pollForm.addObject("action", "createForm");
+        return pollForm;
     }
 
     @PostMapping("/create")
-        public String pollCreate(ModelMap map, @ModelAttribute("poll") Poll thePoll) 
+        public String pollCreate(ModelMap map, @ModelAttribute("poll") Form form, Principal principal) 
                         throws Exception{
 
-            insertPoll(thePoll);
+            Poll poll = new Poll(form.getQuestion(), principal.getName(), form.getOption1(), form.getOption2(), form.getOption3(), form.getOption4());
+            PollRepo.save(poll);
+            System.out.println("poll inserted");
 
             return "redirect:../";
         }
 
     @GetMapping("/{pollId}/delete")
-    public ModelAndView deletePoll(@PathVariable("pollId") String pollId) throws Exception{
-        
+    public String deletePoll(@PathVariable("pollId") Integer pollId) throws Exception{
+        PollRepo.delete(PollRepo.findById(pollId).orElse(null));
 
-        deleteComment(pollId,0);
-
-        deleteVote(pollId);
-
-        Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-        String URL = "jdbc:derby://localhost:1527/Poll;create=false;user=nbuser;password=nbuser";
-        Connection conn = DriverManager.getConnection(URL);
-        Statement stmt = conn.createStatement(); 
-
-        String pollDeleteQuery = "DELETE FROM polls WHERE poll_id = "+ Integer.parseInt(pollId);
-        int num = stmt.executeUpdate(pollDeleteQuery);
-        System.out.println(num + " Poll deleted");
-        IndexServlet.pollList.remove(pollId);
-
-        return IndexServlet.index();
+        return "redirect:../";
     }
-
+/*
     @GetMapping("/{pollId}/comment/create")
     public ModelAndView commentCreateForm(){
         // ModelAndView pollCommentForm = new ModelAndView("pollCommentForm","Poll",new Poll());

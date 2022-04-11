@@ -4,8 +4,8 @@
  */
 package hkmu.comps380f.gp.service;
 
-import hkmu.comps380f.gp.Model.Poll;
-import hkmu.comps380f.gp.dao.PollRepository;
+import hkmu.comps380f.gp.Model.Vote;
+import hkmu.comps380f.gp.dao.VoteRepository;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +14,13 @@ import org.springframework.stereotype.Service;
  * @author emilylau
  */
 @Service
-public class PollService{ 
+public class VoteService{ 
     @Resource
-    PollRepository PollRepo;
+    VoteRepository VoteRepo;
     
-    public void updatePoll(Integer pollId, String question, String username, String option1, String option2, String option3, String option4){
-        Poll poll = PollRepo.findById(pollId).orElse(null);
-        poll.setQuestion(question);
-        poll.setUsername(username);
-        poll.setOption1(option1);
-        poll.setOption2(option2);
-        poll.setOption3(option3);
-        poll.setOption4(option4);
-        PollRepo.save(poll);
+    public void updateVote(Integer pollId, String username, String voteOption){
+        Vote vote = VoteRepo.findByPollIdAndUsername(pollId, username);
+        vote.setVoteOption(voteOption);
+        VoteRepo.save(vote);
     }
 }

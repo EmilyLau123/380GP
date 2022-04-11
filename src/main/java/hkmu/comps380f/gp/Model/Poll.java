@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -40,11 +41,13 @@ public class Poll implements Serializable{
     @OneToMany(mappedBy = "poll", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
     private List<Comment> comments = new ArrayList<>();
-/*
+    @OneToOne(mappedBy = "poll", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Vote vote = new Vote();
+
     public Poll(){}
 
-    public Poll(Integer pollId, String question, String username, String option1, String option2, String option3, String option4){
-        this.pollId = pollId;        
+    public Poll(String question, String username, String option1, String option2, String option3, String option4){
+              
         this.question = question;
         this.username = username;
         this.option1 = option1;
@@ -52,7 +55,7 @@ public class Poll implements Serializable{
         this.option3 = option3;
         this.option4 = option4;
     }
-*/
+
     //Setter
     public void setPollId(Integer pollId) {
         this.pollId = pollId;

@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author emilylau
  */
-public interface PollRepository extends JpaRepository<Poll, Integer> { 
+public interface pollRepository extends JpaRepository<Poll, String> { 
 
 
 }
