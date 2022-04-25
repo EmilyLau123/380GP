@@ -2,10 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+
 package hkmu.comps380f.gp.service;
 
-import hkmu.comps380f.gp.Model.Vote;
-import hkmu.comps380f.gp.dao.VoteRepository;
+import hkmu.comps380f.gp.Model.Poll;
+import hkmu.comps380f.gp.dao.PollRepository;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,17 @@ import org.springframework.stereotype.Service;
  * @author emilylau
  */
 @Service
-public class VoteService{ 
+public class PollService{ 
     @Resource
-    VoteRepository VoteRepo;
+    PollRepository PollRepo;
     
-    public void updateVote(Integer pollId, String username, String voteOption){
-        Vote vote = VoteRepo.findByPollIdAndUsername(pollId, username);
-        vote.setVoteOption(voteOption);
-        VoteRepo.save(vote);
+    public void updatePoll(Integer pollId, String question, String option1, String option2, String option3, String option4){
+        Poll poll = PollRepo.findById(pollId).orElse(null);
+        poll.setQuestion(question);
+        poll.setOption1(option1);
+        poll.setOption2(option2);
+        poll.setOption3(option3);
+        poll.setOption4(option4);
+        PollRepo.save(poll);
     }
 }

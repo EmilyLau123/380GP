@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,10 +28,8 @@ import org.hibernate.annotations.FetchMode;
 public class Poll implements Serializable{
     
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="poll_id")
     @Id
-    private Integer pollId;
-    private String username;
+    private Integer id;
     private String question;
     private String option1;
     private String option2;
@@ -40,16 +37,15 @@ public class Poll implements Serializable{
     private String option4;
     @OneToMany(mappedBy = "poll", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
-    private List<Comment> comments = new ArrayList<>();
-    @OneToOne(mappedBy = "poll", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Vote vote = new Vote();
+    private List<PollComment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "poll", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Vote> votes = new ArrayList<>();
 
     public Poll(){}
 
-    public Poll(String question, String username, String option1, String option2, String option3, String option4){
-              
+    public Poll(String question, String option1, String option2, String option3, String option4){
         this.question = question;
-        this.username = username;
         this.option1 = option1;
         this.option2 = option2;
         this.option3 = option3;
@@ -57,12 +53,8 @@ public class Poll implements Serializable{
     }
 
     //Setter
-    public void setPollId(Integer pollId) {
-        this.pollId = pollId;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setPollId(Integer id) {
+        this.id = id;
     }
     
     public void setQuestion(String question) {
@@ -85,18 +77,19 @@ public class Poll implements Serializable{
         this.option4 = option4;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(List<PollComment> comments) {
         this.comments = comments;
     }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
+
 
 
     //Getter
     public Integer getPollId() {
-        return pollId;
-    }
-
-    public String getUsername() {
-        return username;
+        return id;
     }
 
     public String getQuestion() {
@@ -120,10 +113,19 @@ public class Poll implements Serializable{
         return option4;
     }
 
-    public List<Comment> getComments() {
+    public List<PollComment> getComments() {
         return comments;
     }
 
+    public List<Vote> getVotes() {
+        return votes;
+    }
+    
+
+    public void deleteComment(PollComment pollComment) {
+        pollComment.setPoll(null);
+        this.comments.remove(pollComment);
+    }
 }
 
     

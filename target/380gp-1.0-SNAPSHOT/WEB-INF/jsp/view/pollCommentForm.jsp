@@ -14,7 +14,6 @@
     <body>
         <h1>Comment Page</h1>
         <form:form method="POST" modelAttribute="comment">
-            <input type="hidden" name="username" value="<security:authentication property="principal.username" />"/>
             <form:label path="content">Your Comment</form:label><br>
             <form:textarea path="content"/><br>
             <input type="submit" value="Submit"/>

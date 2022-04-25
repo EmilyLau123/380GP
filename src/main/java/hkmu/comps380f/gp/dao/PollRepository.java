@@ -5,14 +5,13 @@
 package hkmu.comps380f.gp.dao;
 
 import hkmu.comps380f.gp.Model.Poll;
-import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author emilylau
  */
-public interface pollRepository extends JpaRepository<Poll, String> { 
+public interface PollRepository extends JpaRepository<Poll, Integer> { 
 
 
 }

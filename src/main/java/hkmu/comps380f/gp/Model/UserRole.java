@@ -22,7 +22,8 @@ import javax.persistence.Table;
 @Table(name = "user_roles")
 public class UserRole implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) @Column(name = "user_role_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_role_id")
     private int id;
     @Column(insertable = false, updatable = false) 
     private String username;

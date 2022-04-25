@@ -21,7 +21,6 @@
                 Vote options
             </legend>
             <form:form method="POST" modelAttribute="poll">
-                <input type="hidden" name="username" value="<security:authentication property="principal.username" />" />
 
                 <form:label path="question">Question: </form:label>
                 <form:input path="question"/><br/>

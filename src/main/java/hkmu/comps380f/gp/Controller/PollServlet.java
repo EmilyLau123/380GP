@@ -4,16 +4,16 @@
  */
 package hkmu.comps380f.gp.Controller;
 
-import hkmu.comps380f.gp.Model.Comment;
 import hkmu.comps380f.gp.Model.Poll;
+import hkmu.comps380f.gp.Model.PollComment;
 import hkmu.comps380f.gp.Model.Vote;
+import hkmu.comps380f.gp.dao.PollCommentRepository;
 import hkmu.comps380f.gp.dao.PollRepository;
+import hkmu.comps380f.gp.dao.VoteRepository;
+import hkmu.comps380f.gp.service.PollCommentService;
 import hkmu.comps380f.gp.service.PollService;
+import hkmu.comps380f.gp.service.VoteService;
 import java.security.Principal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.List;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +40,15 @@ public class PollServlet extends HttpServlet {
     PollService PollService;
     @Autowired
     PollRepository PollRepo;
-    
+    @Autowired
+    VoteService VoteService;
+    @Autowired
+    VoteRepository VoteRepo;
+    @Autowired
+    PollCommentService PollCommentService;
+    @Autowired
+    PollCommentRepository PollCommentRepo;
+
     public class Form{
         private String question;
         private String option1;
@@ -90,13 +98,36 @@ public class PollServlet extends HttpServlet {
         }
 
     }
+    public class VoteForm{
+            private String voteOption;
+
+            public String getVoteOption() {
+                return voteOption;
+            }
+
+            public void setVoteOption(String votOption) {
+                this.voteOption = voteOption;
+            }
+    }
+    public class CommentForm{
+        private String content;
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+            
+    }
 
     @GetMapping("/{pollId}")
-    public ModelAndView pollList(@PathVariable("pollId") Integer pollId, HttpServletRequest request, Principal principal)
+    public ModelAndView pollList(@PathVariable("pollId") Integer pollId, @ModelAttribute("vote") VoteForm voteForm, HttpServletRequest request, Principal principal)
                 throws Exception{
         ModelAndView pollPage = new ModelAndView("pollPage");
         Integer voteOption = 0;
-        String username = principal.getName();
         Poll poll = PollRepo.findById(pollId).orElse(null);
         
         String question = poll.getQuestion();
@@ -111,9 +142,13 @@ public class PollServlet extends HttpServlet {
         pollPage.addObject("option3", option3);
         pollPage.addObject("option4", option4);
 
-        Vote vote = VoteRepo.findById(pollId).orElse(null);
+        List<Vote> voteList = VoteRepo.readByPollIdAndUsernameOrderByCreatedAtDesc(pollId, principal.getName());
+        if(voteList.size() != 0){
+            voteOption = voteList.get(0).getVoteOption();
+        }
+        pollPage.addObject("histories", voteList);
 
-        List<Comment> commentsSet = poll.getComments();
+        List<PollComment> commentsSet = poll.getComments();
         
         
         System.out.println("username: "+principal.getName());
@@ -132,10 +167,10 @@ public class PollServlet extends HttpServlet {
     }
 
     @PostMapping("/create")
-        public String pollCreate(ModelMap map, @ModelAttribute("poll") Form form, Principal principal) 
+        public String pollCreate(ModelMap map, @ModelAttribute("poll") Form form) 
                         throws Exception{
 
-            Poll poll = new Poll(form.getQuestion(), principal.getName(), form.getOption1(), form.getOption2(), form.getOption3(), form.getOption4());
+            Poll poll = new Poll(form.getQuestion(), form.getOption1(), form.getOption2(), form.getOption3(), form.getOption4());
             PollRepo.save(poll);
             System.out.println("poll inserted");
 
@@ -148,65 +183,46 @@ public class PollServlet extends HttpServlet {
 
         return "redirect:../";
     }
-/*
+
     @GetMapping("/{pollId}/comment/create")
     public ModelAndView commentCreateForm(){
         // ModelAndView pollCommentForm = new ModelAndView("pollCommentForm","Poll",new Poll());
-        return new ModelAndView("pollCommentForm","comment",new Comment());
+        return new ModelAndView("pollCommentForm","comment",new CommentForm());
     }
 
     @PostMapping("/{pollId}/comment/create")
-    public String commentCreate(@PathVariable("pollId") String pollId, 
-                                @ModelAttribute("comment") Comment theComment,
-                                HttpServletRequest request)
+    public String commentCreate(@PathVariable("pollId") Integer pollId, 
+                                @ModelAttribute("comment") CommentForm commentForm,
+                                Principal principal)
                     throws Exception{
-
-        Comment comment = new Comment();
-        comment.setUsername(request.getParameter("username"));
-        comment.setContent(theComment.getContent());
-        System.out.println(comment);
-        insertComment(comment);
+        PollCommentService.createPollComment(pollId, principal.getName(), commentForm.getContent());      
         return "redirect:..";
         
     }
 
     @GetMapping("/{pollId}/comment/{commentId}/delete")
-    public String commentDeleteOne(@PathVariable("pollId") String pollId, 
-                                    @PathVariable("commentId") String commentId,
-                                    HttpServletRequest request)
+    public String commentDeleteOne(@PathVariable("pollId") Integer pollId, @PathVariable("commentId") Integer commentId)
                         throws Exception{
 
-        deleteComment(pollId, Integer.parseInt(commentId));
+        PollCommentService.deletePollComment(pollId, commentId);
         System.out.println(commentId + " Comment deleted");
         return "redirect:../../";
 
     }
 
     @PostMapping("/{pollId}/vote")
-    public String voteEdit(@PathVariable("pollId") String pollId, 
+    public String voteCreate(@PathVariable("pollId") Integer pollId, 
                                 @ModelAttribute("vote") Vote theVote,
-                                HttpServletRequest request)
+                                Principal principal)
                     throws Exception{
+        String username = principal.getName();
+        VoteService.createVote(pollId, username, theVote.getVoteOption());
 
-        Vote vote = new Vote();
-        vote.setPollId(Integer.parseInt(pollId));
-        vote.setUsername(request.getParameter("username"));
-        vote.setVoteOption(theVote.getVoteOption());
-        String username = request.getParameter("username");
-        ResultSet voteRs = getVote(pollId, username);
-
-        if(voteRs.next()){
-            System.out.println("edit: " + theVote.getVoteOption());
-            editVote(pollId, username, theVote.getVoteOption());
-        }else{
-            System.out.println("create");
-            insertVote(vote);
-        }
-        
+      
         return "redirect:../../";
         
     }
-
+/*
     private ResultSet getPoll(String pollId)
                     throws Exception{
         Class.forName("org.apache.derby.jdbc.EmbeddedDriver");

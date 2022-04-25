@@ -38,9 +38,6 @@
             Create poll
         </a><br>
         
-        
-        
-
         <c:choose>
             <c:when test="${fn:length(pollList) == 0}">
                 <i>There are no poll in the system.</i>
@@ -53,7 +50,22 @@
             </c:otherwise>
         </c:choose>
         
-        
+        <h1>Lectures</h1>
+        <a href="<c:url value="/lecture/create">
+        </c:url>">
+            Create lecture
+        </a><br>
+        <c:choose>
+            <c:when test="${fn:length(lectureList) == 0}">
+                <i>There are no lecture in the system.</i>
+            </c:when>
+            <c:otherwise>
+                <c:forEach var="lecture" items="${lectureList}">
+                    <a href="<c:url value="/lecture/${lecture.getLectureId()}">
+                    </c:url>"><c:out value="${lecture.getTitle()}" /></a><br/>
+                </c:forEach>
+            </c:otherwise>
+        </c:choose>
         
      </body>
 </html>

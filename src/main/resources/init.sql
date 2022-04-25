@@ -31,48 +31,61 @@ INSERT INTO users (username, password,fullname,phone,address) VALUES ('emily', '
 INSERT INTO user_roles(username, role) VALUES ('emily', 'ROLE_STUDENT'); 
 
 CREATE TABLE lectures (
-    lecture_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+    id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     title VARCHAR(50) NOT NULL, 
-    link VARCHAR(50) NOT NULL, 
-    PRIMARY KEY (lecture_id)
-);
-
-CREATE TABLE comment (
-    comment_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-    lecture_id INTEGER NOT NULL,
-    username VARCHAR(50) NOT NULL,
-    content VARCHAR(250),
-    PRIMARY KEY (username),
-    FOREIGN KEY (lecture_id) REFERENCES lectures(lecture_id)
+    PRIMARY KEY (id)
 );
 
 INSERT INTO lectures VALUES ('keith', 'lecture 1','link');
 
+CREATE TABLE lecture_comments (
+    id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+    lecture_id INTEGER NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    content VARCHAR(250),
+    PRIMARY KEY (username),
+    FOREIGN KEY (lecture_id) REFERENCES lectures(id)
+);
+
+
+
 CREATE TABLE polls (
-    poll_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-    username VARCHAR(50) NOT NULL, 
+    id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     question VARCHAR(50) NOT NULL, 
     option1 VARCHAR(50) NOT NULL,
     option2 VARCHAR(50) NOT NULL,
     option3 VARCHAR(50) NOT NULL,
     option4 VARCHAR(50) NOT NULL,
-    PRIMARY KEY (poll_id)
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE votes (
+    id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     poll_id INTEGER NOT NULL,
     username VARCHAR(50) NOT NULL,
     voteOption INTEGER NOT NULL,
-    FOREIGN KEY (poll_id) REFERENCES polls(poll_id)
+    created_at TIMESTAMP,
+    FOREIGN KEY (poll_id) REFERENCES polls(id)
 );
 
-CREATE TABLE comments (
+CREATE TABLE poll_comments (
+    id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     poll_id INTEGER NOT NULL,
-    comment_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     username VARCHAR(50) NOT NULL,
     content VARCHAR(250),
-    PRIMARY KEY (comment_id),
-    FOREIGN KEY (poll_id) REFERENCES polls(poll_id)
+    created_at TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (poll_id) REFERENCES polls(id)
 );
 
-INSERT INTO polls (username, question, option1, option2, option3, option4) VALUES ('keith', 'how are you?','Good', 'fine', 'bad', 'perfer not to say');
+INSERT INTO polls (question, option1, option2, option3, option4) VALUES ('how are you?','Good', 'fine', 'bad', 'perfer not to say');
+
+CREATE TABLE course_materials (
+    id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+    filename VARCHAR(50) NOT NULL,
+    content_type VARCHAR(50) NOT NULL,
+    content BLOB DEFAULT NULL,
+    lecture_id INTEGER DEFAULT NULL,
+    PRIMARY KEY (materialId),
+    FOREIGN KEY (lecture_id) REFERENCES lectures(id)
+);

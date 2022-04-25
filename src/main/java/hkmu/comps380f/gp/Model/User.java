@@ -23,7 +23,6 @@ import javax.persistence.Table;
 @Table(name = "users")
 public class User implements Serializable{
     @Id
-
     private String username;
     private String password;
     private String fullname;
@@ -42,9 +41,6 @@ public class User implements Serializable{
         this.phone = phone;
         this.role = new UserRole(this, role);
     }
-
-
-
 
     public String getUsername() {
         return username;

@@ -63,6 +63,11 @@
 
     <b:bean id="UserService" class="hkmu.comps380f.gp.service.UserService" />
     <b:bean id="PollService" class="hkmu.comps380f.gp.service.PollService" />
+    <b:bean id="VoteService" class="hkmu.comps380f.gp.service.VoteService" />
+    <b:bean id="PollCommentService" class="hkmu.comps380f.gp.service.PollCommentService" />
+    <b:bean id="LectureCommentService" class="hkmu.comps380f.gp.service.LectureCommentService" />
+    <b:bean id="LectureService" class="hkmu.comps380f.gp.service.LectureService" />
+    <b:bean id="MaterialService" class="hkmu.comps380f.gp.service.MaterialService" />
 
     <authentication-manager>
         <authentication-provider user-service-ref="UserService" />

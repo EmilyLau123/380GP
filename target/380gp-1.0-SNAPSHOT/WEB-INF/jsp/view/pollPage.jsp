@@ -23,20 +23,41 @@
     <body>
         <a href="<c:url value="/">
                 </c:url>"><c:out value="to Index" /></a><br />
-        <a href="<c:url value="/poll/${poll.getPollId()}/delete">
+        <a href="<c:url value="/poll/${pollId}/delete">
                 </c:url>"><c:out value="Delete this Poll" /></a><br />
-        <h1>Poll ${poll.getPollId()} question: ${poll.getQuestion()}</h1>
-        <c:url var="vote_url"  value="/poll/${poll.getPollId()}/vote" />
+        <h1>Poll ${pollId} question: ${question}</h1>
+        <c:url var="vote_url"  value="/poll/${pollId}/vote" />
         <form:form mehtod="POST" action="${vote_url}" modelAttribute="vote" >
-            <input type="hidden" name="username" value="<security:authentication property="principal.username" />"/>
-            <form:radiobutton  path="voteOption" value="1" checked="${voteOption eq 1 ? 'checked' : ''}" />${poll.getOption1()}<br>
-            <form:radiobutton  path="voteOption" value="2" checked="${voteOption eq 2 ? 'checked' : ''}" />${poll.getOption2()}<br>
-            <form:radiobutton  path="voteOption" value="3" checked="${voteOption eq 3 ? 'checked' : ''}" />${poll.getOption3()}<br>
-            <form:radiobutton  path="voteOption" value="4" checked="${voteOption eq 4 ? 'checked' : ''}" />${poll.getOption4()}<br>
+            <form:radiobutton  path="voteOption" value="1" checked="${voteOption eq 1 ? 'checked' : ''}" />${option1}<br>
+            <form:radiobutton  path="voteOption" value="2" checked="${voteOption eq 2 ? 'checked' : ''}" />${option2}<br>
+            <form:radiobutton  path="voteOption" value="3" checked="${voteOption eq 3 ? 'checked' : ''}" />${option3}<br>
+            <form:radiobutton  path="voteOption" value="4" checked="${voteOption eq 4 ? 'checked' : ''}" />${option4}<br>
             <input type="submit" value="Vote"></input><br>
         </form:form>
+            
+            <c:choose>
+            <c:when test="${empty histories}">
+               <p>No vote histories</p> 
+            </c:when>
+            <c:otherwise>
+                <table>
+                    <tr>
+                        <th>voted option</th>
+                        <th>voted at</th>
+                    </tr>
+                    <c:forEach var="history" items="${histories}">
+                        <tr>
+                            <td>${history.getVoteOption()} </td>
+                            <td>${history.getCreatedAt()} </td>
+                            
+                        </tr>
+                    </c:forEach>
+                 </table>  
+            </c:otherwise>
+        </c:choose>
+            
         <h2>Comments</h2>
-        <a href="<c:url value="/poll/${poll.getPollId()}/comment/create">            
+        <a href="<c:url value="/poll/${pollId}/comment/create">            
         </c:url>">
             Create comment
         </a>
@@ -52,11 +73,11 @@
                         <th>Comments</th>
                         <th>Delete</th>
                     </tr>
-                    <c:forEach var="entry" items="${comments}">
+                    <c:forEach var="comment" items="${comments}">
                         <tr>
-                            <td>${entry.getUsername()} </td>
-                            <td>${entry.getContent()} </td>
-                            <td><a href="<c:url value="/poll/${poll.getPollId()}/comment/${entry.getCommentId()}/delete"></c:url>">
+                            <td>${comment.getUsername()} </td>
+                            <td>${comment.getContent()} </td>
+                            <td><a href="<c:url value="/poll/${pollId}/comment/${comment.getCommentId()}/delete"></c:url>">
                                     <c:out value="Delete"/>
                                 </a> 
                             </td>
