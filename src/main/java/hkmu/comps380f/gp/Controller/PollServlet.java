@@ -14,6 +14,8 @@ import hkmu.comps380f.gp.service.PollCommentService;
 import hkmu.comps380f.gp.service.PollService;
 import hkmu.comps380f.gp.service.VoteService;
 import java.security.Principal;
+import java.sql.ResultSet;
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -142,17 +144,38 @@ public class PollServlet extends HttpServlet {
         pollPage.addObject("option3", option3);
         pollPage.addObject("option4", option4);
 
-        List<Vote> voteList = VoteRepo.readByPollIdAndUsernameOrderByCreatedAtDesc(pollId, principal.getName());
-        if(voteList.size() != 0){
-            voteOption = voteList.get(0).getVoteOption();
+        List<Vote> voteHistoryList = VoteRepo.readByPollIdAndUsernameOrderByCreatedAtDesc(pollId, principal.getName());
+        if(voteHistoryList.size() != 0){
+            voteOption = voteHistoryList.get(0).getVoteOption();
         }
-        pollPage.addObject("histories", voteList);
+        pollPage.addObject("histories", voteHistoryList);
 
         List<PollComment> commentsSet = poll.getComments();
+        List<Vote> voteList = poll.getVotes();
+        Integer[] voteOptionTotal = {0,0,0,0};
+        List<String> userList = VoteRepo.findDistinctUsername();
+
+
+        for(String username:userList){
+            Vote lastestVote = VoteRepo.findFirstByPollIdAndUsernameOrderByCreatedAtDesc(pollId,username);
+            Integer option = lastestVote.getVoteOption();
+            if(option ==1){
+                voteOptionTotal[0] += 1;
+            }
+            if(option == 2){
+                voteOptionTotal[1] += 1;
+            }
+            if(option == 3){
+                voteOptionTotal[2] += 1;
+            }
+            if(option == 4){
+                voteOptionTotal[3] += 1;
+            }
+        }
         
         
-        System.out.println("username: "+principal.getName());
-        
+        System.out.println("voteOptionTotal: "+voteOptionTotal);
+        pollPage.addObject("voteOptionTotal", voteOptionTotal);  
         pollPage.addObject("voteOption", voteOption);    
         pollPage.addObject("comments", commentsSet);
         //pollPage.addObject("vote", new Vote());
@@ -223,6 +246,29 @@ public class PollServlet extends HttpServlet {
         
     }
 /*
+    @PostMapping("/{pollId}/vote/edit")
+    public String voteEdit(@PathVariable("pollId") Integer pollId, 
+                                @ModelAttribute("vote") Vote theVote,
+                                Principal principal)
+                    throws Exception{
+        String username = principal.getName();
+        Poll poll = PollRepo.findById(pollId).orElse(null);
+        List<Vote> votes = poll.getVotes();
+for (Vote vote: votes){
+if(vote.getUsername().equals(username)){
+vote.setVoteOption(theVote.getVoteOption());
+vote.setCreatedAt(new Date());
+}
+
+}
+        VoteService.createVote(pollId, username, theVote.getVoteOption());
+
+      
+        return "redirect:../../";
+        
+    }
+
+
     private ResultSet getPoll(String pollId)
                     throws Exception{
         Class.forName("org.apache.derby.jdbc.EmbeddedDriver");

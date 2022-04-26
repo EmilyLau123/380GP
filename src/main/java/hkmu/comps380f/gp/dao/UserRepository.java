@@ -5,7 +5,7 @@
 package hkmu.comps380f.gp.dao;
 
 import hkmu.comps380f.gp.Model.User;
-import javax.transaction.Transactional;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -13,6 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author emilylau
  */
 public interface UserRepository extends JpaRepository<User, String> { 
-
+    //List<String> readUsername();
 
 }

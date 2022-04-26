@@ -26,12 +26,15 @@
         <a href="<c:url value="/poll/${pollId}/delete">
                 </c:url>"><c:out value="Delete this Poll" /></a><br />
         <h1>Poll ${pollId} question: ${question}</h1>
+     
         <c:url var="vote_url"  value="/poll/${pollId}/vote" />
+            
+        
         <form:form mehtod="POST" action="${vote_url}" modelAttribute="vote" >
-            <form:radiobutton  path="voteOption" value="1" checked="${voteOption eq 1 ? 'checked' : ''}" />${option1}<br>
-            <form:radiobutton  path="voteOption" value="2" checked="${voteOption eq 2 ? 'checked' : ''}" />${option2}<br>
-            <form:radiobutton  path="voteOption" value="3" checked="${voteOption eq 3 ? 'checked' : ''}" />${option3}<br>
-            <form:radiobutton  path="voteOption" value="4" checked="${voteOption eq 4 ? 'checked' : ''}" />${option4}<br>
+            <form:radiobutton  path="voteOption" value="1" checked="${voteOption eq 1 ? 'checked' : ''}" />${option1}(${voteOptionTotal[0]})<br>
+            <form:radiobutton  path="voteOption" value="2" checked="${voteOption eq 2 ? 'checked' : ''}" />${option2}(${voteOptionTotal[1]})<br>
+            <form:radiobutton  path="voteOption" value="3" checked="${voteOption eq 3 ? 'checked' : ''}" />${option3}(${voteOptionTotal[2]})<br>
+            <form:radiobutton  path="voteOption" value="4" checked="${voteOption eq 4 ? 'checked' : ''}" />${option4}(${voteOptionTotal[3]})<br>
             <input type="submit" value="Vote"></input><br>
         </form:form>
             
